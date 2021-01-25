@@ -1,0 +1,76 @@
+package com.example.apps2;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+
+public class Image {
+
+    private String id;
+    private String created_at;
+    private int width;
+    private int height;
+    private String color;
+    private int likes;
+    private String liked_by_user;
+
+    @SerializedName("current_user_collections")
+    private ArrayList<CurrentUserCollection> currentUserCollection;
+    @SerializedName("user")
+    private User mUser;
+    @SerializedName("urls")
+    private Urls mUrls;
+    @SerializedName("links")
+    private Links mLinks;
+    @SerializedName("categories")
+    private ArrayList<Categories> categories;
+    @SerializedName("profile_image")
+    private ProfileImage mProfileImage;
+
+    static class User {
+        private String name;
+        private String username;
+    }
+
+    static class Urls {
+        private String raw;
+        private String full;
+        private String regular;
+        private String small;
+        private String thumb;
+
+        public String getRaw(){
+            return raw;
+        }
+    }
+
+    static class Categories {
+        private int id;
+        private String title;
+        private int photo_counts;
+    }
+
+    static class CurrentUserCollection {
+    }
+
+    static class Links {
+        private String self;
+        private String html;
+        private String photos;
+        private String likes;
+    }
+
+    static class ProfileImage {
+        private String small;
+        private String medium;
+        private String large;
+    }
+
+    public String getId(){
+        return id;
+    }
+
+    public String getUrl() {
+        return mUrls.getRaw();
+    }
+}
