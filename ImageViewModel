@@ -1,0 +1,58 @@
+package com.example.apps2;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class ImageViewModel extends ViewModel {
+
+    private MutableLiveData<List<Image>> imageList;
+
+
+    public LiveData<List<Image>> getImages() {
+        //if the list is null
+        if (imageList == null) {
+            imageList = new MutableLiveData();
+            //we will load it asynchronously from server in this method
+            loadImages();
+        }
+        //finally we will return the list
+        return imageList;
+    }
+
+    private void loadImages() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://pastebin.com/raw/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        Call<List<Image>> call = apiInterface.getImages();
+
+        call.enqueue(new Callback<List<Image>>() {
+            @Override
+            public void onResponse(@NotNull Call<List<Image>> call, @NotNull Response<List<Image>> response) {
+                if(!response.isSuccessful()) {
+                    return;
+                }
+                List<Image> images = response.body();
+                imageList.setValue(images);
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<List<Image>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+}
