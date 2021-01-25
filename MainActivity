@@ -1,0 +1,40 @@
+package com.example.apps2
+
+import android.os.Bundle
+import android.view.View
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
+
+class MainActivity : AppCompatActivity() {
+
+    private var recyclerView: RecyclerView? = null
+    private var adapter: ImageAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        recyclerView = findViewById(R.id.recyclerView)
+        val button:Button = findViewById(R.id.Button)
+        
+        val imageUrls = arrayListOf<String>()
+
+        val model: ImageViewModel = ViewModelProvider(this).get(ImageViewModel::class.java)
+        model.images.observe(this, Observer { imageLists ->
+            for (imageList in imageLists!!){
+                imageUrls.add(imageList.url)
+            }
+            adapter = ImageAdapter(imageUrls, this)
+            recyclerView?.adapter = adapter
+        })
+
+        button.setOnClickListener { 
+            recyclerView?.layoutManager = GridLayoutManager(this@MainActivity,2)
+        }
+    }
+}
